@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% set active_page = 'video' %}
+{% block title %}Phân tích video · AI Exam Monitoring{% endblock %}
+
+{% block content %}
+<main class="tool-page tool-workspace-page page-width">
+  <section class="tool-page-header" data-reveal>
+    <p class="tool-eyebrow">PHÂN TÍCH VIDEO</p>
+    <div class="tool-page-title-row">
+      <div>
+        <h1>Phát hiện điện thoại trong video</h1>
+        <p>Tải video lên để hệ thống phân tích từng khung hình và xuất kết quả đã gắn nhãn.</p>
+      </div>
+      <div class="tool-status-panel" aria-label="Trạng thái xử lý video">
+        <span><i></i> OpenCV frame-by-frame</span>
+        <strong>Evidence video output</strong>
+      </div>
+    </div>
+  </section>
+
+  <form class="analysis-workspace" method="post" enctype="multipart/form-data" data-reveal>
+    <section class="workspace-main" aria-labelledby="video-upload-title">
+      <article class="upload-card">
+        <div class="workspace-card-head">
+          <div>
+            <span>Nguồn dữ liệu</span>
+            <h2 id="video-upload-title">Upload video kiểm tra</h2>
+          </div>
+          <small>MP4 · AVI · MOV</small>
+        </div>
+
+        <label class="upload-dropzone" for="video-file" data-dropzone>
+          <input id="video-file" class="visually-hidden" type="file" name="video_file" accept=".mp4,.avi,.mov" required data-file-input>
+          <i data-lucide="file-video" aria-hidden="true"></i>
+          <span>Chọn video hoặc kéo thả vào đây</span>
+          <small>Video sẽ được đọc từng frame, gắn nhãn và xuất thành file kết quả.</small>
+        </label>
+
+        <div class="file-state" data-file-meta="video-file">
+          <span>Chưa chọn file</span>
+          <small>File sẽ được xử lý sau khi bấm “Phân tích video”.</small>
+        </div>
+
+        {% if input_url %}
+        <div class="upload-preview">
+          <div class="preview-heading">
+            <span>Video đã tải lên</span>
+            <small>File gốc dùng để đối chiếu sau khi xử lý</small>
+          </div>
+          <video controls src="{{ input_url }}"></video>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i data-lucide="film" aria-hidden="true"></i>
+          <div>
+            <strong>Chưa có video đầu vào</strong>
+            <span>Thông tin file và preview sẽ xuất hiện sau khi upload.</span>
+          </div>
+        </div>
+        {% endif %}
+      </article>
+    </section>
+
+    <aside class="settings-column" aria-label="Thiết lập detector">
+      <section class="detector-settings-card">
+        <div class="panel-heading">
+          <span>Thiết lập detector</span>
+          <i data-lucide="sliders-horizontal" aria-hidden="true"></i>
+        </div>
+
+        <div class="field-group">
+          <label for="video-model">Chọn model</label>
+          <select id="video-model" name="model_mode">
+            {% for option in model_options %}
+            <option value="{{ option }}" {% if option == model_mode %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="video-confidence">Confidence threshold</label>
+          <input id="video-confidence" type="number" name="conf_threshold" min="0.1" max="0.9" step="0.05" value="{{ '%.2f'|format(conf_threshold) }}">
+          <p>Ngưỡng này áp dụng cho từng frame, giúp cân bằng giữa phát hiện và giảm nhiễu.</p>
+        </div>
+
+        <div class="settings-note">
+          <i data-lucide="film" aria-hidden="true"></i>
+          <span>Hỗ trợ MP4, AVI và MOV. Video dài sẽ cần nhiều thời gian xử lý hơn.</span>
+        </div>
+
+        <button class="action action-primary" type="submit">
+          <span>Phân tích video</span>
+          <i data-lucide="play" aria-hidden="true"></i>
+        </button>
+      </section>
+    </aside>
+  </form>
+
+  {% if message or model_warning %}
+  <div class="notice" role="status"><i data-lucide="circle-alert" aria-hidden="true"></i><span>{{ message or model_warning }}</span></div>
+  {% endif %}
+
+  {% if output_url %}
+  <section class="result-section result-workspace" data-reveal>
+    <div class="result-section-head">
+      <p class="kicker">Kết quả</p>
+      <h2>Video đã gắn annotation.</h2>
+      <div class="result-summary">
+        <span class="status-badge status-ok">Đã xử lý xong</span>
+        <span>{{ model_mode }}</span>
+        <span>Conf {{ '%.2f'|format(conf_threshold) }}</span>
+      </div>
+    </div>
+    <article class="video-result">
+      <video controls src="{{ output_url }}"></video>
+      {% if input_url %}<a href="{{ input_url }}">Mở file video gốc <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>{% endif %}
+    </article>
+  </section>
+  {% endif %}
+</main>
+{% endblock %}

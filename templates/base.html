@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0f0b">
+  <title>{% block title %}AI Exam Monitoring{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23050805'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23f4f1e8'/%3E%3Ccircle cx='32' cy='32' r='8' fill='none' stroke='%23050805' stroke-width='4'/%3E%3Cpath d='M15 32h34' stroke='%23050805' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=ui-audit-1">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <canvas id="canvas" class="cursor-canvas" aria-hidden="true"></canvas>
+  <div class="site-frame">
+    <header class="site-header">
+      <nav class="site-nav" aria-label="Điều hướng chính">
+        <div class="nav-primary">
+          <a class="brand" href="{{ url_for('index') }}" aria-label="AI Exam Monitoring - Trang chủ">
+            <span class="brand-mark" aria-hidden="true"><span></span></span>
+            <span>AI Exam Monitoring</span>
+          </a>
+          <div class="nav-links" data-nav-menu>
+            <a class="{% if active_page == 'home' %}is-active{% endif %}" href="{{ url_for('index') }}">Home</a>
+            <a class="{% if active_page == 'image' %}is-active{% endif %}" href="{{ url_for('image') }}">Ảnh</a>
+            <a class="{% if active_page == 'video' %}is-active{% endif %}" href="{{ url_for('video') }}">Video</a>
+            <a class="{% if active_page == 'camera' %}is-active{% endif %}" href="{{ url_for('camera') }}">Camera</a>
+          </div>
+        </div>
+        <div class="nav-actions">
+          <a class="nav-command" href="{% if active_page == 'home' %}#quick-start{% else %}{{ url_for('image') }}{% endif %}">
+            <span>{% if active_page == 'home' %}Chọn nguồn{% else %}Kiểm tra ngay{% endif %}</span><i data-lucide="arrow-up-right" aria-hidden="true"></i>
+          </a>
+          <button class="nav-toggle" type="button" data-nav-toggle aria-label="Mở điều hướng" aria-expanded="false">
+            <i data-lucide="menu" aria-hidden="true"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer class="site-footer" data-reveal>
+      <a class="brand" href="{{ url_for('index') }}">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>AI Exam Monitoring</span>
+      </a>
+      <p>YOLOv8 · OpenCV · Flask</p>
+      <div class="footer-links">
+        <a href="{{ url_for('image') }}">Ảnh</a>
+        <a href="{{ url_for('video') }}">Video</a>
+        <a href="{{ url_for('camera') }}">Camera</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/icons.js') }}?v=ui-audit-1"></script>
+  <script src="{{ url_for('static', filename='js/site.js') }}?v=ui-audit-1"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

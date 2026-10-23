@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% set active_page = 'home' %}
+
+{% block content %}
+<main class="landing-page">
+  <section class="hero-editorial" id="top">
+    <div class="hero-backdrop" aria-hidden="true"></div>
+    <div class="hero-depth" aria-hidden="true">
+      <span class="depth-plane depth-plane-back"></span>
+      <span class="depth-plane depth-plane-mid"></span>
+      <span class="depth-plane depth-plane-front"></span>
+      <span class="light-beam light-beam-a"></span>
+      <span class="light-beam light-beam-b"></span>
+      <span class="depth-orbit depth-orbit-a"></span>
+      <span class="depth-orbit depth-orbit-b"></span>
+    </div>
+    <div class="hero-content page-width">
+      <div class="hero-copy" data-reveal>
+        <p class="kicker">Console giám sát phòng thi</p>
+        <h1>
+          <span>Phát hiện điện thoại</span>
+          <span class="muted-line">trong phòng thi.</span>
+        </h1>
+        <p class="hero-intro">Chọn ảnh, video hoặc webcam. Hệ thống khoanh vùng điện thoại, hiển thị độ tin cậy và chỉ nâng cảnh báo khi tín hiệu kéo dài.</p>
+        <div class="hero-console" aria-label="Chọn nguồn kiểm tra nhanh">
+          <div class="console-status">
+            <span><i></i> YOLOv8n sẵn sàng</span>
+            <span>Chỉ nhận diện điện thoại</span>
+          </div>
+          <div class="quick-source-grid">
+            <a class="quick-source quick-source-primary" href="{{ url_for('image') }}">
+              <i data-lucide="image" aria-hidden="true"></i>
+              <span>Ảnh</span>
+              <small>JPG, JPEG, PNG</small>
+            </a>
+            <a class="quick-source" href="{{ url_for('video') }}">
+              <i data-lucide="film" aria-hidden="true"></i>
+              <span>Video</span>
+              <small>MP4, AVI, MOV</small>
+            </a>
+            <a class="quick-source" href="{{ url_for('camera') }}">
+              <i data-lucide="video" aria-hidden="true"></i>
+              <span>Camera</span>
+              <small>Webcam realtime</small>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-preview-stage">
+        <aside class="detection-frame" data-reveal aria-label="Minh họa khung phát hiện điện thoại">
+          <div class="frame-toolbar">
+            <span><i></i> MINH HỌA / 01</span>
+            <span>KHUNG MẪU</span>
+          </div>
+          <div class="frame-media">
+            <img src="{{ url_for('static', filename='assets/generated/hero-detection-frame.webp') }}" alt="Điện thoại trên bàn thi được dùng làm minh họa phát hiện">
+            <span class="vision-box vision-phone"><b>cell phone</b><small>0.91</small></span>
+            <span class="vision-line" aria-hidden="true"></span>
+          </div>
+          <div class="frame-status"><span>PHÁT HIỆN MẪU</span><strong>CẢNH BÁO MINH HỌA</strong></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof-section page-width" data-reveal>
+    <div class="section-label">Từ tín hiệu đến bằng chứng</div>
+    <div class="proof-layout">
+      <div class="proof-media">
+        <img src="{{ url_for('static', filename='assets/generated/process-capture-detect-alert.webp') }}?v=exam-theme-2" alt="Minh họa luồng ghi nhận, khoanh vùng và cảnh báo trong hệ thống giám sát">
+      </div>
+      <div class="proof-copy">
+        <h2>Một luồng kiểm tra gọn, ít nhiễu và dễ đối chiếu.</h2>
+        <div class="proof-steps">
+          <article>
+            <span>01</span>
+            <h3>Chỉ nhận diện điện thoại</h3>
+            <p>Bộ nhận diện được giới hạn vào đối tượng điện thoại để giảm nhiễu từ các vật thể không liên quan.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Gắn nhãn trực tiếp</h3>
+            <p>OpenCV vẽ khung nhận diện, nhãn và độ tin cậy trên frame để kết quả có thể kiểm chứng.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Cảnh báo theo thời gian</h3>
+            <p>LOW/HIGH chỉ tăng cấp khi tín hiệu kéo dài, hạn chế cảnh báo vội trong một frame đơn lẻ.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="source-section page-width" id="quick-start" data-reveal>
+    <div class="section-heading">
+      <p class="kicker">Ba nguồn dữ liệu</p>
+      <h2>Bắt đầu từ nguồn dữ liệu đang có.</h2>
+    </div>
+    <div class="collection-grid">
+      <a class="collection-card collection-large" href="{{ url_for('image') }}">
+        <img src="{{ url_for('static', filename='assets/generated/image-analysis-still.webp') }}?v=exam-theme-2" alt="Ảnh tĩnh có điện thoại trên bàn học">
+        <span>Ảnh</span>
+        <h3>Khoanh vùng điện thoại trong một khung hình.</h3>
+        <p>Tải JPG, JPEG hoặc PNG và nhận ảnh đã gắn bounding box.</p>
+      </a>
+      <a class="collection-card" href="{{ url_for('video') }}">
+        <img src="{{ url_for('static', filename='assets/generated/video-analysis-frames.webp') }}" alt="Minh họa phân tích video theo từng frame">
+        <span>Video</span>
+        <h3>Xử lý tuần tự, giữ bằng chứng theo từng frame.</h3>
+      </a>
+      <a class="collection-card" href="{{ url_for('camera') }}">
+        <img src="{{ url_for('static', filename='assets/generated/camera-realtime-monitoring.webp') }}" alt="Minh họa camera realtime trong phòng thi">
+        <span>Camera</span>
+        <h3>Theo dõi webcam trong thời gian thực.</h3>
+      </a>
+    </div>
+  </section>
+
+  <section class="alert-section page-width" data-reveal>
+    <div class="section-heading compact-heading">
+      <p class="kicker">Luồng cảnh báo</p>
+      <h2>Ghi nhận, khoanh vùng, rồi mới cảnh báo.</h2>
+      <p class="alert-subtext">Mỗi tín hiệu được xử lý theo một chuỗi rõ ràng: lấy khung hình, nhận diện điện thoại, rồi nâng mức cảnh báo khi xuất hiện liên tục.</p>
+    </div>
+    <div class="alert-stack">
+      <article class="alert-card">
+        <span>01 / Ghi nhận</span>
+        <h3>Đọc khung hình từ ảnh, video hoặc webcam.</h3>
+        <p>Hệ thống nhận dữ liệu đầu vào và chuẩn hóa từng frame trước khi phân tích.</p>
+        <i data-lucide="aperture" aria-hidden="true"></i>
+      </article>
+      <article class="alert-card alert-card-detect">
+        <span>02 / Khoanh vùng</span>
+        <h3>Xác định điện thoại và hiển thị độ tin cậy.</h3>
+        <p>Bộ phát hiện trả về khung nhận diện, nhãn lớp và độ tin cậy để đối chiếu trực tiếp.</p>
+        <i data-lucide="focus" aria-hidden="true"></i>
+      </article>
+      <article class="alert-card alert-card-high">
+        <span>03 / Cảnh báo</span>
+        <h3>Nâng mức cảnh báo khi tín hiệu lặp lại.</h3>
+        <p>Trạng thái chuyển từ LOW sang HIGH khi điện thoại xuất hiện liên tục qua nhiều frame.</p>
+        <i data-lucide="siren" aria-hidden="true"></i>
+      </article>
+    </div>
+
+    <div class="signal-demo" data-dashboard aria-label="Minh họa tín hiệu cảnh báo">
+      <div class="signal-panel">
+        <span class="signal-label">Tín hiệu nhận diện</span>
+        <strong><span data-count-to="91" data-count-suffix="%">91%</span></strong>
+        <p>Độ tin cậy minh họa từ khung hình hiện tại.</p>
+      </div>
+      <div class="signal-chart" aria-hidden="true">
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+      </div>
+      <div class="signal-panel signal-panel-alert">
+        <span class="signal-label">Ngưỡng cảnh báo</span>
+        <strong><span data-count-to="3">3</span> frame</strong>
+        <p>Chỉ nâng mức khi tín hiệu xuất hiện liên tục.</p>
+      </div>
+      <div class="demo-alert" role="status">
+        <span></span>
+        <strong>HIGH ALERT</strong>
+        <small>Điện thoại xuất hiện liên tục</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section page-width" data-reveal>
+    <div class="section-heading compact-heading">
+      <p class="kicker">Câu hỏi nhanh</p>
+      <h2>Rõ cách dùng trước khi giám sát.</h2>
+    </div>
+    <div class="faq-list">
+      <article class="faq-item">
+        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-model">
+          <span>App đang dùng model nào?</span>
+          <i data-lucide="chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="faq-panel" id="faq-model" aria-hidden="true">
+          <div>
+            <p>Mặc định có YOLOv8n pretrained chỉ nhận diện class <strong>cell phone</strong>. Nếu có <code>models/best.pt</code>, bạn có thể chọn model custom đã train riêng.</p>
+          </div>
+        </div>
+      </article>
+      <article class="faq-item">
+        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-alert">
+          <span>Khi nào chuyển sang HIGH ALERT?</span>
+          <i data-lucide="chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="faq-panel" id="faq-alert" aria-hidden="true">
+          <div>
+            <p>HIGH ALERT chỉ kích hoạt khi điện thoại được phát hiện liên tục theo ngưỡng thời gian cấu hình, tránh báo động vì một frame nhiễu.</p>
+          </div>
+        </div>
+      </article>
+      <article class="faq-item">
+        <button class="faq-trigger" type="button" aria-expanded="false" aria-controls="faq-evidence">
+          <span>Có lưu bằng chứng không?</span>
+          <i data-lucide="chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="faq-panel" id="faq-evidence" aria-hidden="true">
+          <div>
+            <p>Ảnh/video sau xử lý được lưu vào thư mục output để đối chiếu. Camera realtime có thể lưu frame cảnh báo theo cấu hình thông báo.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="final-cta page-width" data-reveal>
+    <img src="{{ url_for('static', filename='assets/generated/final-cta-command-center.webp') }}" alt="Không gian điều phối giám sát bài thi bằng AI">
+    <div class="final-cta-content">
+      <p class="kicker">Sẵn sàng kiểm tra</p>
+      <h2>Đưa nguồn dữ liệu đầu tiên vào hệ thống.</h2>
+      <div class="final-actions">
+        <a class="action action-primary" href="{{ url_for('image') }}">Ảnh</a>
+        <a class="action action-secondary" href="{{ url_for('video') }}">Video</a>
+        <a class="action action-secondary" href="{{ url_for('camera') }}">Camera</a>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}?v=ui-audit-1"></script>
+{% endblock %}

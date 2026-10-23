@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% set active_page = 'camera' %}
+{% block title %}Camera thời gian thực · AI Exam Monitoring{% endblock %}
+
+{% block content %}
+<main class="tool-page page-width">
+  <section class="camera-hero">
+    <div class="camera-copy" data-reveal>
+      <p class="kicker">Camera realtime</p>
+      <h1>Theo dõi webcam trong thời gian thực.</h1>
+      <p>Bộ phát hiện xử lý từng frame và phân cấp tín hiệu LOW hoặc HIGH theo thời gian xuất hiện.</p>
+      <div class="tool-note"><i data-lucide="circle-dot-dashed" aria-hidden="true"></i><span>Camera phải được kết nối với máy đang chạy ứng dụng.</span></div>
+    </div>
+    <form class="control-panel control-panel-inline" method="get" action="{{ url_for('camera') }}" data-reveal>
+      <div class="panel-heading"><span>Thiết lập stream</span><i data-lucide="sliders-horizontal" aria-hidden="true"></i></div>
+      <label for="camera-model">Chọn model</label>
+      <select id="camera-model" name="model_mode">
+        {% for option in model_options %}
+        <option value="{{ option }}" {% if option == model_mode %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <label for="camera-confidence">Confidence threshold</label>
+      <input id="camera-confidence" type="number" name="conf_threshold" min="0.1" max="0.9" step="0.05" value="{{ '%.2f'|format(conf_threshold) }}">
+      <button class="action action-primary" type="submit"><span>Cập nhật stream</span><i data-lucide="refresh-cw" aria-hidden="true"></i></button>
+    </form>
+  </section>
+
+  {% if model_warning %}
+  <div class="notice"><i data-lucide="circle-alert" aria-hidden="true"></i><span>{{ model_warning }}</span></div>
+  {% endif %}
+
+  <section class="camera-stage" data-reveal>
+    <div class="camera-stage-bar">
+      <span><i data-lucide="radio" aria-hidden="true"></i> Camera 0</span>
+      <span>MJPEG / LIVE</span>
+    </div>
+    <img src="{{ url_for('video_feed', model_mode=model_mode, conf_threshold=conf_threshold) }}" alt="Luồng webcam thời gian thực">
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% set active_page = 'image' %}
+{% block title %}Phân tích ảnh · AI Exam Monitoring{% endblock %}
+
+{% block content %}
+<main class="tool-page tool-workspace-page page-width">
+  <section class="tool-page-header" data-reveal>
+    <p class="tool-eyebrow">PHÂN TÍCH ẢNH</p>
+    <div class="tool-page-title-row">
+      <div>
+        <h1>Phát hiện điện thoại trong ảnh</h1>
+        <p>Tải ảnh lên, chọn detector và nhận kết quả nhận diện kèm bounding box.</p>
+      </div>
+      <div class="tool-status-panel" aria-label="Trạng thái detector">
+        <span><i></i> YOLOv8n / Custom</span>
+        <strong>Cell phone detection</strong>
+      </div>
+    </div>
+  </section>
+
+  <form class="analysis-workspace" method="post" enctype="multipart/form-data" data-reveal>
+    <section class="workspace-main" aria-labelledby="image-upload-title">
+      <article class="upload-card">
+        <div class="workspace-card-head">
+          <div>
+            <span>Nguồn dữ liệu</span>
+            <h2 id="image-upload-title">Upload ảnh kiểm tra</h2>
+          </div>
+          <small>JPG · JPEG · PNG</small>
+        </div>
+
+        <label class="upload-dropzone" for="image-file" data-dropzone>
+          <input id="image-file" class="visually-hidden" type="file" name="image_file" accept=".jpg,.jpeg,.png" required data-file-input>
+          <i data-lucide="image-up" aria-hidden="true"></i>
+          <span>Chọn ảnh hoặc kéo thả vào đây</span>
+          <small>Ảnh phòng thi, bàn làm bài hoặc khung camera cần kiểm tra điện thoại.</small>
+        </label>
+
+        <div class="file-state" data-file-meta="image-file">
+          <span>Chưa chọn file</span>
+          <small>File sẽ được phân tích sau khi bấm “Phân tích ảnh”.</small>
+        </div>
+
+        {% if original_url %}
+        <div class="upload-preview">
+          <div class="preview-heading">
+            <span>Ảnh đã tải lên</span>
+            <small>Sẵn sàng đối chiếu với ảnh đã annotation</small>
+          </div>
+          <img src="{{ original_url }}" alt="Ảnh gốc đã tải lên">
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i data-lucide="image" aria-hidden="true"></i>
+          <div>
+            <strong>Chưa có ảnh đầu vào</strong>
+            <span>Kết quả preview sẽ xuất hiện tại đây sau khi upload.</span>
+          </div>
+        </div>
+        {% endif %}
+      </article>
+    </section>
+
+    <aside class="settings-column" aria-label="Thiết lập detector">
+      <section class="detector-settings-card">
+        <div class="panel-heading">
+          <span>Thiết lập detector</span>
+          <i data-lucide="sliders-horizontal" aria-hidden="true"></i>
+        </div>
+
+        <div class="field-group">
+          <label for="image-model">Chọn model</label>
+          <select id="image-model" name="model_mode">
+            {% for option in model_options %}
+            <option value="{{ option }}" {% if option == model_mode %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="image-confidence">Confidence threshold</label>
+          <input id="image-confidence" type="number" name="conf_threshold" min="0.1" max="0.9" step="0.05" value="{{ '%.2f'|format(conf_threshold) }}">
+          <p>Ngưỡng càng cao thì hệ thống càng thận trọng, nhưng có thể bỏ sót vật thể nhỏ hoặc mờ.</p>
+        </div>
+
+        <div class="settings-note">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <span>YOLOv8n chỉ nhận diện class <strong>cell phone</strong> theo COCO ID 67.</span>
+        </div>
+
+        <button class="action action-primary" type="submit">
+          <span>Phân tích ảnh</span>
+          <i data-lucide="scan-line" aria-hidden="true"></i>
+        </button>
+      </section>
+    </aside>
+  </form>
+
+  {% if message or model_warning %}
+  <div class="notice" role="status"><i data-lucide="circle-alert" aria-hidden="true"></i><span>{{ message or model_warning }}</span></div>
+  {% endif %}
+
+  {% if original_url and output_url %}
+  <section class="result-section result-workspace" data-reveal>
+    <div class="result-section-head">
+      <p class="kicker">Kết quả</p>
+      <h2>Ảnh đã được gắn bounding box.</h2>
+      <div class="result-summary">
+        <span class="status-badge {% if detections %}status-alert{% else %}status-ok{% endif %}">
+          {% if detections %}Phát hiện điện thoại{% else %}Không có phát hiện{% endif %}
+        </span>
+        <span>{{ detections|length }} phát hiện</span>
+        <span>{{ model_mode }}</span>
+        <span>Conf {{ '%.2f'|format(conf_threshold) }}</span>
+      </div>
+    </div>
+    <div class="result-grid">
+      <article class="result-card">
+        <div class="result-label">Ảnh gốc</div>
+        <img src="{{ original_url }}" alt="Ảnh gốc đã tải lên">
+      </article>
+      <article class="result-card result-card-highlight">
+        <div class="result-label">Đã detect</div>
+        <img src="{{ output_url }}" alt="Ảnh đã được phát hiện điện thoại">
+      </article>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if detections %}
+  <section class="data-table" data-reveal>
+    <div class="data-table-heading"><h2>Danh sách phát hiện</h2><span>{{ detections|length }} kết quả</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Label</th><th>Confidence</th><th>Class ID</th><th>Bounding box</th></tr></thead>
+        <tbody>
+          {% for item in detections %}
+          <tr><td>{{ item.label }}</td><td>{{ item.confidence }}</td><td>{{ item.class_id }}</td><td>{{ item.x1 }}, {{ item.y1 }}, {{ item.x2 }}, {{ item.y2 }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+</main>
+{% endblock %}

@@ -1,0 +1,29 @@
+# Secrets / runtime
+.env
+telegram_runtime.env
+*.log
+server_debug_*.txt
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime data (may contain personal images)
+alerts/
+uploads/
+outputs/
+static/alerts/
+static/uploads/
+static/outputs/
+
+# Model weights (yolov8n.pt is auto-downloaded by Ultralytics)
+*.pt
+
+# AI-tool / editor artifacts
+.agents/
+.codex/
+.impeccable/
+.vscode/
+.idea/
