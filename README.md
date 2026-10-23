@@ -75,6 +75,3 @@ python -m unittest tests.test_security
 - Detection is per-frame; adding tracking (e.g. ByteTrack) would make alert logic more robust.
 - Flask's dev server is for local use; use a production WSGI server (gunicorn/waitress) and HTTPS when deploying.
 
-## License
-
-MIT
